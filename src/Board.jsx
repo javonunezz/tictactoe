@@ -1,84 +1,105 @@
 import { useState } from "react";
 import { Square } from "./Square";
+import { Confeti } from "./Confeti";
 
-const rowStyle = {
-  display: "flex",
-};
+function searchWin(currentSquares, winningMoves, currentPlayer) {
+  const currentPlayerMovements = currentSquares.filter(
+    (square) => square.value === currentPlayer
+  );
+
+  const idCurrentMovements = currentPlayerMovements
+    .map((square) => square.id.toString())
+    .join("");
+
+  const winningSquares = winningMoves.map((play) => {
+    const contieneSecuencia = new RegExp([...play].join(".*")).test(
+      idCurrentMovements
+    );
+    if (contieneSecuencia) {
+      return [true, play];
+    } else {
+      return [false, play];
+    }
+  });
+  return winningSquares.find((array) => array[0] === true) ?? [false];
+}
+
+function markingWinningMoves(currentSquares, playsWins) {
+  const squaresMarked = currentSquares.map((square) => {
+    if (playsWins.includes(square.id)) {
+      return {
+        ...square,
+        state: false,
+        bgColor: "green",
+      };
+    } else {
+      return {
+        ...square,
+        state: false,
+      };
+    }
+  });
+  return squaresMarked;
+}
+
+function updateSquares(currentSquares, squareID, currentPlayer) {
+  const squares = currentSquares.map((square) => {
+    if (square.id === squareID) {
+      if (currentPlayer === "X") {
+        return {
+          id: squareID,
+          value: currentPlayer,
+          state: false,
+          bgColor: "#a20c0a",
+        };
+      } else {
+        return {
+          id: squareID,
+          value: currentPlayer,
+          state: false,
+          bgColor: "#207fd8",
+        };
+      }
+    }
+    return square;
+  });
+  return squares;
+}
 
 export const Board = () => {
   const playsWins = ["123", "456", "789", "159", "357", "147", "258", "369"];
   const [currentPlayer, setCurrentPlayer] = useState("X");
   const [playerWin, setPlayerWin] = useState("None");
+  const [showConfetti, setShowConfetti] = useState(false);
   const [squares, setSquares] = useState([
-    { id: 1, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 2, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 3, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 4, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 5, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 6, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 7, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 8, value: "", state: true, bgColor: "#b4d3eb" },
-    { id: 9, value: "", state: true, bgColor: "#b4d3eb" },
+    { id: 1, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 2, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 3, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 4, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 5, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 6, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 7, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 8, value: "", state: true, bgColor: "#cec9ff" },
+    { id: 9, value: "", state: true, bgColor: "#cec9ff" },
   ]);
-
   const Play = (squareID) => {
-    setSquares((prevSquares) => {
-      const updateSquares = prevSquares.map((square) => {
-        if (square.id === squareID) {
-          if (currentPlayer == "X") {
-            return {
-              id: squareID,
-              value: currentPlayer,
-              state: false,
-              bgColor: "#a20c0a",
-            };
-          } else {
-            return {
-              id: squareID,
-              value: currentPlayer,
-              state: false,
-              bgColor: "#207fd8",
-            };
-          }
-        }
-        return square;
-      });
-
-      const gamesPlayed = updateSquares
-        .filter((square) => square.value == currentPlayer)
-        .reduce((sum, current) => {
-          return sum + current.id.toString();
-        }, "")
-        .split("");
-      const winplayer = playsWins.map((gamewin) =>
-        gamewin.split("").every((char) => gamesPlayed.includes(char))
-      );
-      if (winplayer.find((play) => play == true)) {
-        setPlayerWin(currentPlayer);
-        setSquares(
-          updateSquares.map((square) => {
-            if (gamesPlayed.includes(square.id.toString())) {
-              return {
-                id: square.id,
-                value: square.value,
-                state: false,
-                bgColor: "green",
-              };
-            }
-            return {
-              id: square.id,
-              value: square.value,
-              state: false,
-              bgColor: square.bgColor,
-            };
-          })
-        );
-        console.log(gamesPlayed);
+    const currentSquares = updateSquares(squares, squareID, currentPlayer);
+    setSquares(currentSquares);
+    if (searchWin(currentSquares, playsWins, currentPlayer)[0]) {
+      const winningSquares = searchWin(
+        currentSquares,
+        playsWins,
+        currentPlayer
+      )[1];
+      setPlayerWin(currentPlayer);
+      setSquares(markingWinningMoves(currentSquares, winningSquares));
+      setShowConfetti(true);
+    } else {
+      if (currentSquares.every((square) => square.state === false)) {
+        setPlayerWin("Nobody Won :(");
       }
-      console.log(winplayer);
-      return updateSquares;
-    });
-    setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+      setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+    }
   };
 
   const Reset = () => {
@@ -93,12 +114,14 @@ export const Board = () => {
       { id: 8, value: "", state: true, bgColor: "#cec9ff" },
       { id: 9, value: "", state: true, bgColor: "#cec9ff" },
     ]);
+    setShowConfetti(false);
     setCurrentPlayer("X");
     setPlayerWin("None");
   };
 
   return (
     <div className="containerStyle">
+      <Confeti show={showConfetti} />
       <div id="winnerArea" className="instructionsStyle">
         Winner: <span>{playerWin}</span>
       </div>

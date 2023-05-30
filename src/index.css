@@ -1,11 +1,16 @@
+@import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
+
 :root {
   width: 100vw;
   height: 100vh;
-  background-color: aqua;
+  background-color: #283655;
+  background-image: url("./assets/control.png");
+  background-repeat: repeat;
+  background-size: 500px 500px;
   align-items: center;
   justify-content: center;
   display: flex;
-  font-family: cursive;
+  font-family: "Press Start 2P", cursive;
   letter-spacing: 2px;
 }
 
@@ -20,31 +25,38 @@
 .containerStyle {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
-  background-color: #e3d9ed;
+  background-color: #83679d;
   padding: 20px 20px;
   border-radius: 30px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-  width: 50%;
-  height: 70%;
+  width: 60%;
+  height: 580px;
+  padding: 30px;
+  min-width: 300px;
 }
 
 .buttonStyle {
   margin-top: 15px;
+  display: flex;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
-  width: 80px;
-  height: 40px;
   background-color: #70003b;
   color: white;
   font-size: 16px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   width: 70%;
+  text-align: center;
+  font-family: "Press Start 2P", cursive;
 }
 
 .instructionsStyle {
   margin-top: 5px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   font-weight: bold;
   font-size: 20px;
   color: #220414;
@@ -52,17 +64,17 @@
 
 .boardStyle {
   background-color: #f8efed;
-  width: 70%;
-  height: 70%;
+  width: 100%;
+  height: 240px;
   display: grid;
   grid-template-rows: 1/3 1/3 1/3;
   flex-direction: column;
   border: 3px #eee solid;
   border-radius: 10px;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
-  margin-top: 5px;
+  margin-top: 10px;
   padding: 10px;
-  gap: 10px;
+  gap: 5px;
 }
 
 .rowStyle {
@@ -71,13 +83,30 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  gap: 5px;
 }
 
 .valueStyle {
-  width: 80%;
+  width: 40px;
   height: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 2vw;
+}
+
+@media screen and (min-width: 768px) {
+  .boardStyle {
+    width: 70%;
+    height: 70%;
+    gap: 20px;
+  }
+
+  .rowStyle {
+    gap: 20px;
+  }
+
+  .containerStyle {
+    height: 800px;
+  }
 }
